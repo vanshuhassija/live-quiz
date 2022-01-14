@@ -47,7 +47,7 @@ let awards=[];
 const pool = mysql.createPool({
   connectionLimit: 100,
   host: "localhost",
-  user: "root",
+  user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: "quiz",
   debug: false,
