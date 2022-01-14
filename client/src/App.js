@@ -32,7 +32,7 @@ function App() {
   const [socket, setSocket] = useState(null);
   const [user, setUser] = useState(null);
   useEffect(() => {
-    const newSocket = io(`http://localhost:3000`);
+    const newSocket = io(`http://ec2-3-110-94-37.ap-south-1.compute.amazonaws.com:3000`);
     setSocket(newSocket);
     return () => newSocket.close();
   }, [setSocket]);

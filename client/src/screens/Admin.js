@@ -1,5 +1,6 @@
 import { Button, ButtonGroup } from "@chakra-ui/button";
 import { Box, Flex, Heading, Text } from "@chakra-ui/layout";
+import { HStack } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import Select from "react-select";
 const Admin = ({ socket }) => {
@@ -47,10 +48,46 @@ const Admin = ({ socket }) => {
         }}
       />
       <Flex mt={3} alignItems="flex-start">
-          <Button colorScheme="red" onClick={()=>{
-                socket.emit("ideal")
-          }}>Make Ideal</Button>
-          </Flex>
+        <HStack>
+          <Button
+            colorScheme="red"
+            onClick={() => {
+              socket.emit("ideal");
+            }}
+          >
+            Make Ideal
+          </Button>
+          <Button
+            onClick={() => {
+              socket.emit("completeRound", 1);
+            }}
+          >
+            Complete Round 1
+          </Button>
+          <Button
+            onClick={() => {
+              socket.emit("completeRound", 2);
+            }}
+          >
+            Complete Round 2
+          </Button>
+          <Button
+            onClick={() => {
+              socket.emit("completeRound", 3);
+            }}
+          >
+            Complete Round 3
+          </Button>
+          <Button
+            onClick={() => {
+              socket.emit("completeRound", 4);
+            }}
+          >
+            Complete Round 4
+          </Button>
+        </HStack>
+      </Flex>
+
       {questions?.length
         ? questions.map((question) => {
             return (
@@ -65,13 +102,21 @@ const Admin = ({ socket }) => {
                   Question
                 </Heading>
                 <Text my={4}>{question.question}</Text>
-                {question.code ? <img src={question.code}  /> : ""}
+                {question.code ? <img src={question.code} /> : ""}
                 <Flex mt={3}>
-                  {!question.asked?<Button colorScheme="blue" mr={3} onClick={()=>{
-                      socket.emit("launchQuestion", {question})
-                  }}>
-                    Launch Question
-                  </Button>:""}
+                  {!question.asked ? (
+                    <Button
+                      colorScheme="blue"
+                      mr={3}
+                      onClick={() => {
+                        socket.emit("launchQuestion", { question });
+                      }}
+                    >
+                      Launch Question
+                    </Button>
+                  ) : (
+                    ""
+                  )}
                 </Flex>
               </Flex>
             );

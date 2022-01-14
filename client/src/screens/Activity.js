@@ -4,6 +4,7 @@ import { Flex, Heading, HStack, VStack } from "@chakra-ui/layout";
 import React, { useContext, useEffect } from "react";
 import QuestionModal from "./QuestionModal";
 import UserContext from "../contexts/User";
+import { useNavigate } from "react-router-dom"; 
 import {
   Table,
   TableCaption,
@@ -15,8 +16,8 @@ import {
 } from "@chakra-ui/table";
 
 const Activity = ({ socket }) => {
-  const { user } = useContext(UserContext);
-
+  const { user,setUser } = useContext(UserContext);
+  const navigate=useNavigate();
   const [activities, setActivities] = React.useState([]);
   const [leaderboard, setLeaderboard] = React.useState([]);
   useEffect(() => {
@@ -28,6 +29,10 @@ const Activity = ({ socket }) => {
       socket.on("fetchLeaderboard", (data) => {
         console.log("Leaderboard", data);
         setLeaderboard(data);
+      });
+      socket.on("refetchUser", (data) => {
+          setUser(null);
+        navigate("/login")
       });
     }
   }, [socket]);
@@ -66,7 +71,7 @@ const Activity = ({ socket }) => {
           <Tbody>
               {leaderboard.map((team) => {
                 return (
-                  <Tr bg={user?.team?.id===team.id&&"teal.100"}>
+                  <Tr bg={!team?.canPlay?"red.100":user?.team?.id===team.id&&"teal.100"}>
                     <Td>{team.id}</Td>
                     <Td>{team.score}</Td>
                   </Tr>

@@ -17,18 +17,21 @@ const rounds = [
     acceptableResponses: 2,
     positive: 10,
     negative: -5,
+    eliminate:1,
   },
   {
     round: 2,
     acceptableResponses: 20,
     positive: 10,
     negative: -5,
+    eliminate:8,
   },
   {
     round: 3,
     acceptableResponses: 2,
     positive: 10,
     negative: -5,
+    eliminate:1,
   },
 ];
 let activeRound=rounds[0];
@@ -286,6 +289,38 @@ io.on("connection", function (socket) {
       );
     });
   });
+
+  socket.on("completeRound", (round) => {
+    pool.getConnection(function (err, connection) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      const eliminationCount=activeRound.eliminate;
+      activeRound+=1;
+      connection.query(
+        `SELECT * FROM teams where canPlay=1 ORDER BY score ASC  LIMIT ${eliminationCount}`,
+        function (err, rows) {
+          if (!err) {
+            const promises=[];
+            for(let i=0;i<rows.length;i++){
+                const team=rows[i];
+                const query=`UPDATE teams SET canPlay=0 WHERE id='${team.id}'`;
+                promises.push(pool.query(query));
+            }
+            Promise.all(promises).then(()=>{
+                io.sockets.emit("refetchUser");
+            }).catch((err)=>{
+                console.error("Error is",error)
+            });
+          } else {
+          }
+        }
+      );
+    });
+  });
+
+
 
   socket.on("submitAnswer", (data) => {
     const { question, answer, user } = data;
