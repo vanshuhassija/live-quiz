@@ -81,12 +81,12 @@ function updateScores(points){
 }
 
 function awardPoints(){
-    const allTeams= [...new Set(activities.map(activity => activity?.user?.team?.id))];
+    const allTeams= [...new Set(activities.map(activity => activity.user.team.id))];
     console.log("All teams",allTeams);
     const pointsArr=[];
     for(let i=0;i<allTeams.length;i++){
         const team=allTeams[i];
-        const answersByTeam=activities.filter(activity=>activity?.user?.team?.id===team);
+        const answersByTeam=activities.filter(activity=>activity.user.team.id===team);
         console.log("Answers by team",answersByTeam[0].user.team);
         let points=0;
         for(let j=0;j<answersByTeam.length;j++){
@@ -295,7 +295,7 @@ io.on("connection", function (socket) {
         return;
       }
       let correctAnswer = false;
-      if (question?.answer.replaceAll(" ", "") === answer.replaceAll(" ", "")) {
+      if (question.answer.replaceAll(" ", "") === answer.replaceAll(" ", "")) {
         correctAnswer = true;
       }
       const activity={
